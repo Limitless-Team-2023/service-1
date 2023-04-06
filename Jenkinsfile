@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Docker compose up') {
             steps {
-                sh "IMAGE_TAG=${env.IMAGE_TAG} docker-compose up -d"
+                sh "USER_NAME=${DOCKER_USER} IMAGE_TAG=${env.IMAGE_TAG} docker-compose up -d"
             }
         }
         stage('Run integration tests') {
