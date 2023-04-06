@@ -28,5 +28,11 @@ pipeline {
               sh "git push https://${GITHUB_TOKEN}@github.com/Limitless-Team-2023/service-1.git ${env.IMAGE_TAG}"
             }
         }
+        stage('Docker compose up') {
+            sh "IMAGE_TAG=${env.IMAGE_TAG} docker-compose up -d hello"
+        }
+        stage('Run integration tests') {
+            sh "./gradlew testE2E"
+        }
     }
 }
