@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER = credentials("35bd5b04-20f2-42ab-9d06-8946682b5bb1")
+        DOCKER_PASSWORD = credentials("docker-pass")
     }
 
     stages {
@@ -18,7 +18,7 @@ pipeline {
                     MINOR_VERSION = sh([script: 'git tag | cut -d . -f 2', returnStdout: true]).trim()
                     PATCH_VERSION = sh([script: 'git tag | cut -d . -f 3', returnStdout: true]).trim()
                }
-              sh "docker login docker.io -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}"
+              sh "docker login docker.io -u vlastrutz -p ${DOCKER_PASSWORD}"
               sh "docker build -t vlastrutz/hello-img:${MAJOR_VERSION}.\$((${MINOR_VERSION} + 1)).${PATCH_VERSION} ."
             }
         }
