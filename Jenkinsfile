@@ -29,10 +29,14 @@ pipeline {
             }
         }
         stage('Docker compose up') {
-            sh "IMAGE_TAG=${env.IMAGE_TAG} docker-compose up -d hello"
+            steps {
+                sh "IMAGE_TAG=${env.IMAGE_TAG} docker-compose up -d hello"
+            }
         }
         stage('Run integration tests') {
-            sh "./gradlew testE2E"
+            steps {
+                sh "./gradlew testE2E"
+            }
         }
     }
 }
