@@ -1,7 +1,9 @@
 pipeline {
     agent any
     environment {
+        DOCKER_USER = credentials("docker-user")
         DOCKER_PASSWORD = credentials("docker-pass")
+        GITHUB_TOKEN = credentials("github-token")
     }
 
     stages {
@@ -13,14 +15,17 @@ pipeline {
         stage('Tag image') {
               steps {
                 script {
-                    GIT_TAG = sh([script: 'git fetch --tag && git tag', returnStdout: true]).trim()
-                    MAJOR_VERSION = sh([script: 'git tag | cut -d . -f 1', returnStdout: true]).trim()
-                    MINOR_VERSION = sh([script: 'git tag | cut -d . -f 2', returnStdout: true]).trim()
-                    PATCH_VERSION = sh([script: 'git tag | cut -d . -f 3', returnStdout: true]).trim()
-               }
-              sh "docker login docker.io -u vlastrutz -p ${DOCKER_PASSWORD}"
-              sh "docker build -t vlastrutz/hello-img:${MAJOR_VERSION}.\$((${MINOR_VERSION} + 1)).${PATCH_VERSION} ."
-              sh "docker push vlastrutz/hello-img:${MAJOR_VERSION}.\$((${MINOR_VERSION} + 1)).${PATCH_VERSION}"
+                   sh([script: 'git fetch --tag', returnStdout: true]).trim()
+                   env.MAJOR_VERSION = sh([script: 'git tag | sort --version-sort | tail -1 | cut -d . -f 1', returnStdout: true]).trim()
+                   env.MINOR_VERSION = sh([script: 'git tag | sort --version-sort | tail -1 | cut -d . -f 2', returnStdout: true]).trim()
+                   env.PATCH_VERSION = sh([script: 'git tag | sort --version-sort | tail -1 | cut -d . -f 3', returnStdout: true]).trim()
+                   env.IMAGE_TAG = "${env.MAJOR_VERSION}.\$((${env.MINOR_VERSION} + 1)).${env.PATCH_VERSION}"
+                }
+              sh "docker login docker.io -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}"
+              sh "docker build -t ${DOCKER_USER}/hello-img:${env.IMAGE_TAG} ."
+              sh "docker push ${DOCKER_USER}/hello-img:${env.IMAGE_TAG}"
+              sh "git tag ${env.IMAGE_TAG}"
+              sh "git push https://${GITHUB_TOKEN}@github.com/Limitless-Team-2023/service-1.git ${env.IMAGE_TAG}"
             }
         }
     }
