@@ -20,6 +20,7 @@ pipeline {
                }
               sh "docker login docker.io -u vlastrutz -p ${DOCKER_PASSWORD}"
               sh "docker build -t vlastrutz/hello-img:${MAJOR_VERSION}.\$((${MINOR_VERSION} + 1)).${PATCH_VERSION} ."
+              sh "docker push vlastrutz/hello-img:${MAJOR_VERSION}.\$((${MINOR_VERSION} + 1)).${PATCH_VERSION}"
             }
         }
     }
