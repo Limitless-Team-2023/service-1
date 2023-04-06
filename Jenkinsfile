@@ -28,9 +28,9 @@ pipeline {
               sh "git push https://${GITHUB_TOKEN}@github.com/Limitless-Team-2023/service-1.git ${env.IMAGE_TAG}"
             }
         }
-        stage('Docker compose up') {
+        stage('Hello kubectl apply') {
             steps {
-                sh "USER_NAME=${DOCKER_USER} IMAGE_TAG=${env.IMAGE_TAG} docker-compose up -d"
+                sh 'kubectl apply -f kubernetes/hello.yaml'
             }
         }
         stage('Run integration tests') {
