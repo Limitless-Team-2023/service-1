@@ -30,7 +30,7 @@ public class VipLoungeController {
     @Timed(value = "hello.getVipLoungeByEntryPrice.time", description = "Time taken to return VipLounge")
     @Counted(value = "hello.getVipLoungeByEntryPrice.count", description = "Times getVipLoungeByEntryPrice was used")
     public VipLounge getVipLoungeByEntryPrice(@RequestParam(name="entryPrice", required = true) String entryPrice) throws EntityNotFoundException {
-        metricsRegistry.counter("my_non_aop_metric", "endpoint", "hello").increment(counter.incrementAndGet());
+        metricsRegistry.counter("my_non_aop_metric", "endpoint", "viplounge").increment(counter.incrementAndGet());
         return vipLoungeService.getVipLoungeByEntryPrice(entryPrice);
     }
 }

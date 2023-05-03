@@ -30,7 +30,7 @@ public class CustomerController {
     @Timed(value = "hello.getCustomerById.time", description = "Time taken to return customer")
     @Counted(value = "hello.getCustomerById.count", description = "Times getCustomerById was used")
     public Customer getCustomerById(@RequestParam(name="name", required = true) String Name) throws EntityNotFoundException {
-        metricsRegistry.counter("my_non_aop_metric", "endpoint", "hello").increment(counter.incrementAndGet());
+        metricsRegistry.counter("my_non_aop_metric", "endpoint", "customer").increment(counter.incrementAndGet());
         return customerService.getCustomerByName(Name);
     }
 }
