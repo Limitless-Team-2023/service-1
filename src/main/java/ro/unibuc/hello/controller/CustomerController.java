@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ro.unibuc.hello.dto.Customer;
 import ro.unibuc.hello.exception.EntityNotFoundException;
 import ro.unibuc.hello.service.CustomerService;
+import java.util.concurrent.atomic.AtomicLong;
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
 
 @Controller
 public class CustomerController {
