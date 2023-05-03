@@ -15,9 +15,18 @@ public class VipLoungeController {
     @Autowired
     public VipLoungeService vipLoungeService;
 
+    @Autowired
+    MeterRegistry metricsRegistry;
+
+    private final AtomicLong counter = new AtomicLong();
+
+
     @GetMapping("/getVipLoungeByEntryPrice")
     @ResponseBody
+    @Timed(value = "hello.getVipLoungeByEntryPrice.time", description = "Time taken to return VipLounge")
+    @Counted(value = "hello.getVipLoungeByEntryPrice.count", description = "Times getVipLoungeByEntryPrice was used")
     public VipLounge getVipLoungeByEntryPrice(@RequestParam(name="entryPrice", required = true) String entryPrice) throws EntityNotFoundException {
+        metricsRegistry.counter("my_non_aop_metric", "endpoint", "hello").increment(counter.incrementAndGet());
         return vipLoungeService.getVipLoungeByEntryPrice(entryPrice);
     }
 }

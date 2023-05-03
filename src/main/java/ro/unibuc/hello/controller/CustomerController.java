@@ -15,9 +15,18 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    MeterRegistry metricsRegistry;
+
+    private final AtomicLong counter = new AtomicLong();
+
+
     @GetMapping("/getCustomerByName")
     @ResponseBody
+    @Timed(value = "hello.getCustomerById.time", description = "Time taken to return customer")
+    @Counted(value = "hello.getCustomerById.count", description = "Times getCustomerById was used")
     public Customer getCustomerById(@RequestParam(name="name", required = true) String Name) throws EntityNotFoundException {
+        metricsRegistry.counter("my_non_aop_metric", "endpoint", "hello").increment(counter.incrementAndGet());
         return customerService.getCustomerByName(Name);
     }
 }
